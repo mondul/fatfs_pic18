@@ -8,7 +8,7 @@
 / Functions and Buffer Configurations
 /---------------------------------------------------------------------------*/
 
-#define	_FS_TINY		0
+#define	_FS_TINY		1
 /* This option switches tiny buffer configuration. (0:Normal or 1:Tiny)
 /  At the tiny configuration, size of the file object (FIL) is reduced _MAX_SS
 /  bytes. Instead of private sector buffer eliminated from the file object,
@@ -23,7 +23,7 @@
 /  and optional writing functions as well. */
 
 
-#define _FS_MINIMIZE	0
+#define _FS_MINIMIZE	2
 /* This option defines minimization level to remove some basic API functions.
 /
 /   0: All basic functions are enabled.
@@ -195,7 +195,7 @@
 / System Configurations
 /---------------------------------------------------------------------------*/
 
-#define _FS_NORTC	0
+#define _FS_NORTC	1
 #define _NORTC_MON	2
 #define _NORTC_MDAY	1
 #define _NORTC_YEAR	2015
@@ -242,7 +242,7 @@
 /  included somewhere in the scope of ff.c. */
 
 
-#define _WORD_ACCESS	0
+#define _WORD_ACCESS	1
 /* The _WORD_ACCESS option is an only platform dependent option. It defines
 /  which access method is used to the word data on the FAT volume.
 /
