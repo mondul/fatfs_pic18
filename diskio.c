@@ -13,10 +13,18 @@
 /* 29 Jul 2015                                                           */
 /* Edit by mondul                                                        */
 /* Edited for usage with the XC8 compiler and PIC18 microcontrollers.    */
+/*                                                                       */
+/* 9 Aug 2015                                                            */
+/* Edit by mondul                                                        */
+/* Added support for the XC16 compiler and PIC24 microcontrollers.       */
 /*-----------------------------------------------------------------------*/
 
 #include "diskio.h"
 #include "mcc_generated_files/mcc.h"
+#ifdef __XC16
+#define FCY (_XTAL_FREQ/2)
+#include <libpic30.h>
+#endif
 
 
 /*--------------------------------------------------------------------------

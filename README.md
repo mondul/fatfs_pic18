@@ -1,8 +1,8 @@
-# FatFs implementation on PIC18
+# FatFs implementation on PIC18 / PIC24
 
-**Compiler Used:** XC8 v1.35 (free mode) + MPLAB Code Configurator (MCC) plugin. For XC8 v1.34 check the project tags
+**Compilers Used:** XC8 v1.35 and XC16 v1.24 (free mode) + MPLAB Code Configurator (MCC) plugin. For previous compiler versions check the project tags
 
-**PICs Tested:** PIC18F25K20, PIC18F46K22, PIC18F87K90
+**PICs Tested:** PIC18F25K20, PIC18F46K22, PIC18F87K90, PIC24FJ64GA002
 
 **PIC Requirements:**
 * SPI (MSSP)
@@ -12,7 +12,7 @@
 **FatFs Version:** R0.11 with patch 1
 
 **How To Build:** [*(View YouTube video)*](https://www.youtube.com/watch?v=4b3vXYBXhSQ)
-* Create a standalone PIC18 project on MPLABX using the XC8 compiler
+* Create a standalone PIC18 / PIC24 project on MPLABX using the XC8 / XC16 compiler
 * Open the MCC following the menu route Tools -> Embedded -> MPLAB Code Configurator
 * On Project Resources click on System, configure the system clock and the device's configuration bits
 * In the Device Resources, choose MSSP and pick the SPI port that will be used, double-click on SPI Master
