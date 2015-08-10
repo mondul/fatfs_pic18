@@ -15,10 +15,8 @@
 /* Edited for usage with the XC8 compiler and PIC18 microcontrollers.    */
 /*-----------------------------------------------------------------------*/
 
-#include "hardware.h"
 #include "diskio.h"
-#include <spi.h>
-
+#include "mcc_generated_files/mcc.h"
 
 
 /*--------------------------------------------------------------------------
@@ -81,56 +79,24 @@ BYTE CardType;			/* Card type flags */
 
 #if _SD_SPI == 1
 
-#define sd_init()	OpenSPI1(SPI_FOSC_64, MODE_00, SMPMID)
-#define sd_open()	OpenSPI1(SPI_FOSC_4, MODE_00, SMPMID)
-#define sd_tx(d)	WriteSPI1(d)
-
-static
-BYTE sd_rx(void) {
-	WREG = SSP1BUF;				// Clear BF
-	PIR1bits.SSP1IF = 0;		// Clear interrupt flag
-	SSP1BUF = 0xFF;				// initiate bus cycle by writing NOP
-	while (!PIR1bits.SSP1IF);	// wait until cycle complete
-	return SSP1BUF;				// return with byte read
-}
+#define sd_init()	SPI1_Initialize()
+#define sd_open()	SPI1_Open()
+#define sd_tx(d)	SPI1_Exchange8bit(d)
+#define sd_rx()		SPI1_Exchange8bit(0xFF)
 
 #elif _SD_SPI == 2
 
-#define sd_init()	OpenSPI2(SPI_FOSC_64, MODE_00, SMPMID)
-#define sd_open()	OpenSPI2(SPI_FOSC_4, MODE_00, SMPMID)
-#define sd_tx(d)	WriteSPI2(d)
-
-static
-BYTE sd_rx(void) {
-	WREG = SSP2BUF;				// Clear BF
-#if defined (SPI_V3) || defined (SPI_V5)
-	PIR3bits.SSP2IF = 0;		// Clear interrupt flag
-#else
-	PIR2bits.SSP2IF = 0;		// Clear interrupt flag
-#endif
-	SSP2BUF = 0xFF;				// initiate bus cycle by writing NOP
-#if defined (SPI_V3) || defined (SPI_V5)
-	while (!PIR3bits.SSP2IF);	// wait until cycle complete
-#else
-	while (!PIR2bits.SSP2IF);	// wait until cycle complete
-#endif
-	return SSP2BUF;				// return with byte read
-}
+#define sd_init()	SPI2_Initialize()
+#define sd_open()	SPI2_Open()
+#define sd_tx(d)	SPI2_Exchange8bit(d)
+#define sd_rx()		SPI2_Exchange8bit(0xFF)
 
 #else
 
-#define sd_init()	OpenSPI(SPI_FOSC_64, MODE_00, SMPMID)
-#define sd_open()	OpenSPI(SPI_FOSC_4, MODE_00, SMPMID)
-#define sd_tx(d)	WriteSPI(d)
-
-static
-BYTE sd_rx(void) {
-	WREG = SSPBUF;				// Clear BF
-	PIR1bits.SSPIF = 0;			// Clear interrupt flag
-	SSPBUF = 0xFF;				// initiate bus cycle by writing NOP
-	while (!PIR1bits.SSPIF);	// wait until cycle complete
-	return SSPBUF;				// return with byte read
-}
+#define sd_init()	SPI_Initialize()
+#define sd_open()	SPI_Open()
+#define sd_tx(d)	SPI_Exchange8bit(d)
+#define sd_rx()		SPI_Exchange8bit(0xFF)
 
 #endif
 
@@ -163,7 +129,7 @@ BYTE wait_ready (void)	/* 1:Ready, 0:Timeout */
 static
 void deselect (void)
 {
-	SD_CS = 1;	/* Set CS# high */
+	SD_CS_SetHigh();	/* Set CS# high */
 	sd_rx();	/* Dummy clock (force DO hi-z for multiple slave SPI) */
 }
 
@@ -176,7 +142,7 @@ void deselect (void)
 static
 BYTE select (void)	/* 1:Successful, 0:Timeout */
 {
-	SD_CS = 0;	/* Set CS# low */
+	SD_CS_SetLow();	/* Set CS# low */
 	sd_rx();	/* Dummy clock (force DO enabled) */
 	if (wait_ready()) return 1;	/* Wait for card ready */
 

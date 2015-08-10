@@ -1,5 +1,7 @@
 build
 debug
 dist
+mcc_generated_files
 nbproject
+device_config.mcc
 Makefile
