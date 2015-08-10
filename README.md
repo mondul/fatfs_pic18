@@ -26,7 +26,7 @@
 * Select the Projects tab, right-click on Header Files, choose Add Existing Item, select all .h files and click on the Select button
 * Right-click on Source Files, choose Add Existing Item, select all .c files and click on the Select button
 * Open the mcc.c file on the MCC Generated Files and remove the SPI Initialize call from the SYSTEM_Initialize function
-* Edit the configuration files according to your needs and build
+* Edit the configuration files according to your needs and build. For PIC24 remember to change the `main` function type from `void` to `int` and add a `return -1;` to the end of the function. Also on ffconf.h define `WORD_ACCESS` as 0 (byte-by-byte address)
 
 **Configuration Files:**
 * ffconf.h: FatFs configuration options
