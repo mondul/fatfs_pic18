@@ -279,6 +279,9 @@ BYTE send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 	DWORD arg		/* Argument */
 )
 {
+#ifndef __XC8
+	BYTE n;
+#endif
 	BYTE res;
 
 
