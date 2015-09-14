@@ -232,6 +232,10 @@ BYTE xmit_datablock (
 /* Send a command packet to MMC                                          */
 /*-----------------------------------------------------------------------*/
 
+/* NOTE: XC8 compiler is unable to allow recursion,
+/  so the send_cmd function had to be divided */
+
+#ifdef __XC8
 static
 BYTE __send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 	BYTE cmd,		/* Command index */
@@ -267,6 +271,7 @@ BYTE __send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 
 	return res;			/* Return with the response value */
 }
+#endif
 
 static
 BYTE send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
@@ -279,11 +284,43 @@ BYTE send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 
 	if (cmd & 0x80) {	/* ACMD<n> is the command sequense of CMD55-CMD<n> */
 		cmd &= 0x7F;
+#ifdef __XC8
 		res = __send_cmd(CMD55, 0);
+#else
+		res = send_cmd(CMD55, 0);
+#endif
 		if (res > 1) return res;
 	}
 
+#ifdef __XC8
 	return __send_cmd(cmd, arg);	/* Return with the response value */
+#else
+	/* Select the card and wait for ready except to stop multiple block read */
+	if (cmd != CMD12) {
+		deselect();
+		if (!select()) return 0xFF;
+	}
+
+	/* Send command packet */
+	sd_tx(0x40 | cmd);				/* Start + Command index */
+	sd_tx((BYTE)(arg >> 24));		/* Argument[31..24] */
+	sd_tx((BYTE)(arg >> 16));		/* Argument[23..16] */
+	sd_tx((BYTE)(arg >> 8));		/* Argument[15..8] */
+	sd_tx((BYTE)arg);				/* Argument[7..0] */
+	n = 0x01;						/* Dummy CRC + Stop */
+	if (cmd == CMD0) n = 0x95;		/* Valid CRC for CMD0(0) + Stop */
+	if (cmd == CMD8) n = 0x87;		/* Valid CRC for CMD8(0x1AA) Stop */
+	sd_tx(n);
+
+	/* Receive command response */
+	if (cmd == CMD12) sd_rx();		/* Skip a stuff byte when stop reading */
+	n = 10;								/* Wait for a valid response in timeout of 10 attempts */
+	do
+		res = sd_rx();
+	while ((res & 0x80) && --n);
+
+	return res;			/* Return with the response value */
+#endif
 }
 
 
