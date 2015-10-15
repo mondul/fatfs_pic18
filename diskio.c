@@ -22,7 +22,9 @@
 #include "diskio.h"
 #include "mcc_generated_files/mcc.h"
 #ifdef __XC16
+#ifndef FCY
 #define FCY (_XTAL_FREQ/2)
+#endif
 #include <libpic30.h>
 #endif
 
