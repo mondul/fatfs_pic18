@@ -12,6 +12,13 @@ extern "C" {
 #define _USE_WRITE	1	/* 1: Enable disk_write function */
 #define _USE_IOCTL	1	/* 1: Enable disk_ioctl fucntion */
 
+#define _SD_SPI 0
+/* This option defines the SPI port to be used.
+/
+/   0: Default port (for devices with a single MSSP)
+/   1: SPI 1
+/   2: SPI 2 */
+
 #include "integer.h"
 
 
@@ -72,6 +79,35 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 #define ATA_GET_REV			20	/* Get F/W revision */
 #define ATA_GET_MODEL		21	/* Get model name */
 #define ATA_GET_SN			22	/* Get serial number */
+
+
+/*-------------------------------------*/
+/* PIC18 SPI definitions and functions */
+
+/* Note: sd_init() must open SPI at a speed between 100-400 KHz */
+
+#if _SD_SPI == 1
+
+#define sd_init()	SPI1_Initialize()
+#define sd_open()	SPI1_Open()
+#define sd_tx(d)	SPI1_Exchange8bit(d)
+#define sd_rx()		SPI1_Exchange8bit(0xFF)
+
+#elif _SD_SPI == 2
+
+#define sd_init()	SPI2_Initialize()
+#define sd_open()	SPI2_Open()
+#define sd_tx(d)	SPI2_Exchange8bit(d)
+#define sd_rx()		SPI2_Exchange8bit(0xFF)
+
+#else
+
+#define sd_init()	SPI_Initialize()
+#define sd_open()	SPI_Open()
+#define sd_tx(d)	SPI_Exchange8bit(d)
+#define sd_rx()		SPI_Exchange8bit(0xFF)
+
+#endif
 
 #ifdef __cplusplus
 }

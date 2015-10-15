@@ -30,7 +30,7 @@
 
 **Configuration Files:**
 * ffconf.h: FatFs configuration options
-* diskio.c: SPI port configuration. If your device only has one master synchronous serial port (MSSP) module, set the `_SD_SPI` definition to `0`, else set it to `1` or `2` according to the SPI port you are using
+* diskio.h: SPI port configuration. If your device only has one master synchronous serial port (MSSP) module, set the `_SD_SPI` definition to `0`, else set it to `1` or `2` according to the SPI port you are using
 
 **FatFs Homepage:** [http://elm-chan.org/fsw/ff/00index_e.html](http://elm-chan.org/fsw/ff/00index_e.html)
 

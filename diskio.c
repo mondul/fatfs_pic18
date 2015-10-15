@@ -75,44 +75,6 @@ BYTE CardType;			/* Card type flags */
 
 
 /*-----------------------------------------------------------------------*/
-/* PIC18 SPI definitions and functions                                   */
-/*-----------------------------------------------------------------------*/
-
-#define _SD_SPI 0
-/* This option defines the SPI port to be used.
-/
-/   0: Default port (for devices with a single MSSP)
-/   1: SPI 1
-/   2: SPI 2 */
-
-/* Note: sd_init() must open SPI at a speed between 100-400 KHz */
-
-#if _SD_SPI == 1
-
-#define sd_init()	SPI1_Initialize()
-#define sd_open()	SPI1_Open()
-#define sd_tx(d)	SPI1_Exchange8bit(d)
-#define sd_rx()		SPI1_Exchange8bit(0xFF)
-
-#elif _SD_SPI == 2
-
-#define sd_init()	SPI2_Initialize()
-#define sd_open()	SPI2_Open()
-#define sd_tx(d)	SPI2_Exchange8bit(d)
-#define sd_rx()		SPI2_Exchange8bit(0xFF)
-
-#else
-
-#define sd_init()	SPI_Initialize()
-#define sd_open()	SPI_Open()
-#define sd_tx(d)	SPI_Exchange8bit(d)
-#define sd_rx()		SPI_Exchange8bit(0xFF)
-
-#endif
-
-
-
-/*-----------------------------------------------------------------------*/
 /* Wait for card ready                                                   */
 /*-----------------------------------------------------------------------*/
 
